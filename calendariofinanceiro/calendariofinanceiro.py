@@ -2,7 +2,7 @@ from datetime import date
 from typing import Literal, List
 import workdays
 
-from feriados import feriados
+from calendariofinanceiro.feriados import feriados
 
 
 class CalendarioFinanceiro:
