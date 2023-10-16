@@ -3,12 +3,12 @@ O pacote CalendarioFinanceiro fornece funcionalidades para trabalhar com dias ú
 
 ## Instalação
 Para utilizar o pacote CalendarioFinanceiro, você precisa instalá-lo primeiro. Isso pode ser feito utilizando o gerenciador de pacotes pip. Execute o seguinte comando no terminal:
-```
+```shell
 pip install calendariofinanceiro
 ```
 
 ## Uso Básico
-```
+```py
 from datetime import date
 from calendariofinanceiro import CalendarioFinanceiro
 
