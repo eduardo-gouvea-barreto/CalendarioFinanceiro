@@ -99,3 +99,18 @@ class CalendarioFinanceiro:
             date(data.year, data.month, 1), -1
         )
         return fechamento_m1
+
+    def busca_fechamento_mes_ano(self, mes: int, ano: int) -> date:
+        """
+        A partir de um mês e ano, constrói a data de fechamento referente.
+
+        :param mes: Mês de referência do fechamento (Janeiro=1)
+        :param ano: Ano de referência do fechamento
+        :return: A data de fechamento correspondente ao mês e ano passados.
+        """
+        proximo_mes = mes + 1 if mes < 12 else 1
+        proximo_ano = ano if mes < 12 else ano + 1
+        fechamento = self.soma_dias_uteis(
+            date(proximo_ano, proximo_mes, 1), -1
+        )
+        return fechamento
