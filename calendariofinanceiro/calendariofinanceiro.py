@@ -2,15 +2,16 @@ from datetime import date
 from typing import Literal, List
 import workdays
 
-from calendariofinanceiro.feriados import feriados
+from calendariofinanceiro.feriados_on import feriados_on
+from calendariofinanceiro.feriados_off import feriados_off
 
 
 class CalendarioFinanceiro:
     def __init__(self, calendario: Literal["onshore", "offshore"]):
         if calendario == "onshore":
-            self.feriados = feriados
+            self.feriados = feriados_on
         elif calendario == "offshore":
-            self.feriados = []
+            self.feriados = feriados_off
 
     def soma_dias_uteis(self, data_dt: date, dias: int) -> date:
         """
@@ -37,9 +38,7 @@ class CalendarioFinanceiro:
         :return: A nova data após arredondamento
         """
         offset = 1 if arredonda_pra_cima else -1
-        return self.soma_dias_uteis(
-            self.soma_dias_uteis(data_dt, -offset), offset
-        )
+        return self.soma_dias_uteis(self.soma_dias_uteis(data_dt, -offset), offset)
 
     def monta_lista_dias_uteis(
         self,
@@ -82,9 +81,7 @@ class CalendarioFinanceiro:
         data_i = data_final
         for i in range(numero_meses):
             lista_fechamentos.append(data_i)
-            data_i = self.soma_dias_uteis(
-                date(data_i.year, data_i.month, 1), -1
-            )
+            data_i = self.soma_dias_uteis(date(data_i.year, data_i.month, 1), -1)
         return lista_fechamentos
 
     def fechamento_mes_anterior(self, data: date) -> date:
@@ -95,9 +92,7 @@ class CalendarioFinanceiro:
         o fechamento do mês anterior.
         :return: A data de fechamento do mês anterior.
         """
-        fechamento_m1 = self.soma_dias_uteis(
-            date(data.year, data.month, 1), -1
-        )
+        fechamento_m1 = self.soma_dias_uteis(date(data.year, data.month, 1), -1)
         return fechamento_m1
 
     def busca_fechamento_mes_ano(self, mes: int, ano: int) -> date:
@@ -110,7 +105,5 @@ class CalendarioFinanceiro:
         """
         proximo_mes = mes + 1 if mes < 12 else 1
         proximo_ano = ano if mes < 12 else ano + 1
-        fechamento = self.soma_dias_uteis(
-            date(proximo_ano, proximo_mes, 1), -1
-        )
+        fechamento = self.soma_dias_uteis(date(proximo_ano, proximo_mes, 1), -1)
         return fechamento

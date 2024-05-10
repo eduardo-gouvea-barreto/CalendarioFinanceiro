@@ -1191,4 +1191,4 @@ feriados_str = {
     "2099-11-15",
     "2099-12-25",
 }
-feriados = [date.fromisoformat(feriado) for feriado in feriados_str]
+feriados_on = [date.fromisoformat(feriado) for feriado in feriados_str]
