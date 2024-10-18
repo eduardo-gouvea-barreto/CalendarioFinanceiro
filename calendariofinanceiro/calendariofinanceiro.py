@@ -38,7 +38,9 @@ class CalendarioFinanceiro:
         :return: A nova data após arredondamento
         """
         offset = 1 if arredonda_pra_cima else -1
-        return self.soma_dias_uteis(self.soma_dias_uteis(data_dt, -offset), offset)
+        return self.soma_dias_uteis(
+            self.soma_dias_uteis(data_dt, -offset), offset
+        )
 
     def monta_lista_dias_uteis(
         self,
@@ -81,7 +83,9 @@ class CalendarioFinanceiro:
         data_i = data_final
         for i in range(numero_meses):
             lista_fechamentos.append(data_i)
-            data_i = self.soma_dias_uteis(date(data_i.year, data_i.month, 1), -1)
+            data_i = self.soma_dias_uteis(
+                date(data_i.year, data_i.month, 1), -1
+            )
         return lista_fechamentos
 
     def fechamento_mes_anterior(self, data: date) -> date:
@@ -92,8 +96,69 @@ class CalendarioFinanceiro:
         o fechamento do mês anterior.
         :return: A data de fechamento do mês anterior.
         """
-        fechamento_m1 = self.soma_dias_uteis(date(data.year, data.month, 1), -1)
+        fechamento_m1 = self.soma_dias_uteis(
+            date(data.year, data.month, 1), -1
+        )
         return fechamento_m1
+
+    def fechamento_ano_anterior(self, data: date) -> date:
+        """
+        Retorna a data de fechamento do ano anterior à data fornecida.
+
+        :param data: A data de referência para a qual se deseja obter
+        o fechamento do ano anterior.
+        :return: A data de fechamento do ano anterior.
+        """
+        fechamento_a1 = self.soma_dias_uteis(date(data.year, 1, 1), -1)
+        return fechamento_a1
+
+    def data_12m_anterior(self, data: date) -> date:
+        """
+        Retorna a data retroagida 12M da data fornecida.
+
+        :param data: A data de referência para a qual se deseja obter
+        a data retroagida 12M.
+        :return: A data retroagida 12M da data fornecida.
+        """
+
+        if data.month != self.soma_dias_uteis(data, 1).month:
+            # Cenário 1: A data fornecida é uma data de fechamento.
+            # — > Retornamos a data de fechamento do mesmo mês, mas do ano
+            # passado.
+            data_12m = self.busca_fechamento_mes_ano(data.month, data.year - 1)
+        else:
+            # Cenário 2: A data fornecida é não é fechamento de mês.
+            # — > Retornamos a data retroagida exatamente 1 ano, arredondando
+            # para baixo.
+            data_12m = self.arredonda_dia_util(
+                date(data.year - 1, data.month, data.day),
+                arredonda_pra_cima=False,
+            )
+        return data_12m
+
+    def data_24m_anterior(self, data: date) -> date:
+        """
+        Retorna a data de fechamento 24M anterior à data fornecida.
+
+        :param data: A data de referência para a qual se deseja obter
+        o fechamento 24M anterior.
+        :return: A data de fechamento 24M anterior.
+        """
+
+        if data.month != self.soma_dias_uteis(data, 1).month:
+            # Cenário 1: A data fornecida é uma data de fechamento.
+            # — > Retornamos a data de fechamento do mesmo mês, mas do ano
+            # retrasado.
+            data_24m = self.busca_fechamento_mes_ano(data.month, data.year - 2)
+        else:
+            # Cenário 2: A data fornecida é não é fechamento de mês.
+            # — > Retornamos a data retroagida exatamente 2 ano, arredondando
+            # para baixo.
+            data_24m = self.arredonda_dia_util(
+                date(data.year - 2, data.month, data.day),
+                arredonda_pra_cima=False,
+            )
+        return data_24m
 
     def busca_fechamento_mes_ano(self, mes: int, ano: int) -> date:
         """
@@ -105,5 +170,7 @@ class CalendarioFinanceiro:
         """
         proximo_mes = mes + 1 if mes < 12 else 1
         proximo_ano = ano if mes < 12 else ano + 1
-        fechamento = self.soma_dias_uteis(date(proximo_ano, proximo_mes, 1), -1)
+        fechamento = self.soma_dias_uteis(
+            date(proximo_ano, proximo_mes, 1), -1
+        )
         return fechamento
